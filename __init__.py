@@ -1,19 +1,20 @@
 from os.path import join, dirname
 
 from audiobooker.scrappers.librivox import Librivox
-from ovos_plugin_common_play.ocp import MediaType, PlaybackType
+
+from ovos_utils.ocp import MediaType, PlaybackType
 from ovos_utils.parse import fuzzy_match, MatchStrategy
-from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill, \
-    ocp_search, ocp_featured_media
+from ovos_workshop.decorators.ocp import ocp_search, ocp_featured_media
+from ovos_workshop.skills.common_play import OVOSCommonPlaybackSkill
 
 
 class LibrivoxSkill(OVOSCommonPlaybackSkill):
-    def __init__(self):
-        super(LibrivoxSkill, self).__init__("Librivox")
-        self.supported_media = [MediaType.GENERIC, MediaType.AUDIOBOOK]
-        self.skill_icon = join(dirname(__file__), "ui", "librivox-logo.png")
-        self.skill_bg = join(dirname(__file__), "ui", "bg.jpeg")
-        self.skill_pic = join(dirname(__file__), "ui", "librivox-icon.png")
+    def __init__(self, *args, **kwargs):
+        self.supported_media = [MediaType.AUDIOBOOK]
+        self.skill_icon = join(dirname(__file__), "res", "librivox-logo.png")
+        self.skill_bg = join(dirname(__file__), "res", "bg.jpeg")
+        self.skill_pic = join(dirname(__file__), "res", "librivox-icon.png")
+        super().__init__(*args, **kwargs)
 
     def calc_score(self, phrase, match, idx=0, base_score=0):
         # idx represents the order from librivox
@@ -86,7 +87,3 @@ class LibrivoxSkill(OVOSCommonPlaybackSkill):
             "title": book.title,
             "skill_id": self.skill_id
         }
-
-
-def create_skill():
-    return LibrivoxSkill()
